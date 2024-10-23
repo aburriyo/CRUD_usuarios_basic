@@ -3,7 +3,7 @@ import sqlite3
 
 app = Flask(__name__)
 
-# Database setup
+# Creación y conexión de base de datos
 def init_db():
     with sqlite3.connect("users.db") as conn:
         conn.execute('''
@@ -18,7 +18,7 @@ def init_db():
 
 init_db()
 
-# Home route to list users
+# Ruta principal, donde se muestran los usuarios y también se muestran todos los usuarios existentes (SELECT * FROM users)
 @app.route('/')
 def index():
     with sqlite3.connect("users.db") as conn:
@@ -26,7 +26,7 @@ def index():
         users = cursor.fetchall()
     return render_template('usuarios.html', users=users)
 
-# Create a new user
+# Crear un nuevo usuario (función especifica para crear "INSERT INTO)
 @app.route('/create', methods=['GET', 'POST'])
 def create_user():
     if request.method == 'POST':
@@ -39,7 +39,7 @@ def create_user():
     
     return render_template('crear_usuario.html')
 
-# View user details
+# SELECT principalmente de todo, pero específicamente a un usuario en específico
 @app.route('/user/<int:user_id>')
 def view_user(user_id):
     with sqlite3.connect("users.db") as conn:
@@ -47,7 +47,7 @@ def view_user(user_id):
         user = cursor.fetchone()
     return render_template('ver_usuario.html', user=user)
 
-# Update user
+# Actualizar un registro existente (UPDATE WHERE ID)
 @app.route('/edit/<int:user_id>', methods=['GET', 'POST'])
 def edit_user(user_id):
     if request.method == 'POST':
@@ -63,7 +63,7 @@ def edit_user(user_id):
         user = cursor.fetchone()
     return render_template('editar_usuario.html', user=user)
 
-# Delete user
+# Eliminar un usuario existente (DELETE WHERE ID)
 @app.route('/delete/<int:user_id>')
 def delete_user(user_id):
     with sqlite3.connect("users.db") as conn:
